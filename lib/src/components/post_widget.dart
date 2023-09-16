@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone/src/components/avatar_widget.dart';
 import 'package:instagram_clone/src/components/image_data.dart';
 
-class postWidget extends StatelessWidget {
-  const postWidget({super.key});
+class PostWidget extends StatelessWidget {
+  const PostWidget({super.key});
 
   Widget _header() {
     return Padding(
@@ -93,7 +93,7 @@ class postWidget extends StatelessWidget {
             '콘텐츠1입니다\n콘텐츠 1입니다.\n콘텐츠 1입니다.\n콘텐츠 1입니다.',
             prefixText: '탱구',
             onPrefixTap: () {
-              print('개발하는남자 페이지 이동');
+              print('탱구 페이지 이동');
             },
             prefixStyle: const TextStyle(fontWeight: FontWeight.bold),
             expandText: '더보기',

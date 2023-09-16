@@ -23,12 +23,26 @@ class _SearchState extends State<Search> {
       var gi = groupIndex.indexOf(min<int>(groupIndex)!);
       var size = 1;
       if (gi != 1) {
-        size = Random().nextInt(100) % 7 == 0 ? 2 : 1;
+        size = Random().nextInt(100) % 2 == 0 ? 2 : 1;
       }
       groupBox[gi].add(size);
       groupIndex[gi] += size;
     }
-    print(groupBox);
+    if (groupIndex[0] > groupIndex[1]) {
+      groupBox[0].remove(2);
+      groupBox[0].add(1);
+    }
+    if (groupIndex[0] - 1 > groupIndex[1]) {
+      groupBox[0].remove(1);
+    }
+    if (groupIndex[2] > groupIndex[1]) {
+      groupBox[2].remove(2);
+      groupBox[2].add(1);
+    }
+    if (groupIndex[1] > groupIndex[2]) {
+      groupBox[2].remove(1);
+      groupBox[2].add(2);
+    }
   }
 
   Widget _appbar() {

@@ -62,7 +62,7 @@ class Home extends StatelessWidget {
 
   Widget _postList() {
     return Column(
-      children: List.generate(50, (index) => const postWidget()).toList(),
+      children: List.generate(50, (index) => const PostWidget()).toList(),
     );
   }
 
