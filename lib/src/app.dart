@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instagram_clone/src/components/image_data.dart';
 import 'package:instagram_clone/src/controller/bottom_nav_controller.dart';
-import 'package:instagram_clone/src/pages/Search.dart';
+import 'package:instagram_clone/src/pages/search.dart';
 import 'package:instagram_clone/src/pages/home.dart';
 
 class App extends GetView<BottomNavController> {
@@ -18,6 +18,14 @@ class App extends GetView<BottomNavController> {
             index: controller.pageIndex.value,
             children: [
               const Home(),
+              Navigator(
+                key: controller.searchPageNavigatorKey,
+                onGenerateRoute: (routeSetting) {
+                  return MaterialPageRoute(
+                    builder: (context) => const Search(),
+                  );
+                },
+              ),
               const Search(),
               Container(
                 child: const Center(
