@@ -24,7 +24,7 @@ class _SearchState extends State<Search> {
       var gi = groupIndex.indexOf(min<int>(groupIndex)!);
       var size = 1;
       if (gi != 1) {
-        size = Random().nextInt(100) % 2 == 0 ? 2 : 1;
+        size = Random().nextInt(100) % 3 == 0 ? 2 : 1;
       }
       groupBox[gi].add(size);
       groupIndex[gi] += size;
