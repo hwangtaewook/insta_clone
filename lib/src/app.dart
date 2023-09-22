@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instagram_clone/src/components/image_data.dart';
 import 'package:instagram_clone/src/controller/bottom_nav_controller.dart';
+import 'package:instagram_clone/src/pages/active_history.dart';
 import 'package:instagram_clone/src/pages/search.dart';
 import 'package:instagram_clone/src/pages/home.dart';
 
@@ -26,17 +27,8 @@ class App extends GetView<BottomNavController> {
                   );
                 },
               ),
-              const Search(),
-              Container(
-                child: const Center(
-                  child: Text('UPLOAD'),
-                ),
-              ),
-              Container(
-                child: const Center(
-                  child: Text('ACTIVITY'),
-                ),
-              ),
+              Container(),
+              const ActiveHistory(),
               Container(
                 child: const Center(
                   child: Text('MYPAGE'),
