@@ -1,9 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:instagram_clone/firebase_options.dart';
 import 'package:instagram_clone/src/app.dart';
 import 'package:instagram_clone/src/binding/init_binding.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized;
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
