@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:instagram_clone/src/components/avatar_widget.dart';
 import 'package:instagram_clone/src/components/image_data.dart';
 import 'package:instagram_clone/src/components/user_card.dart';
+import 'package:instagram_clone/src/controller/mypage_controller.dart';
 
-class MyPage extends StatefulWidget {
+class MyPage extends GetView<MypageController> {
   const MyPage({super.key});
-
-  @override
-  State<MyPage> createState() => _MyPageState();
-}
-
-class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
-  late TabController tabController;
-  @override
-  void initState() {
-    super.initState();
-    tabController = TabController(length: 2, vsync: this);
-  }
 
   Widget _statisticsOne(String title, int value) {
     return Column(
@@ -43,39 +34,40 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
   Widget _information() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              AvatarWidget(
-                type: AvatarType.TYPE3,
-                thumbPath:
-                    'https://cdn.ccdailynews.com/news/photo/202104/2050116_530468_210.png',
-                size: 80,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Expanded(child: _statisticsOne('Post', 15)),
-                    Expanded(child: _statisticsOne('Followers', 11)),
-                    Expanded(child: _statisticsOne('Following', 3)),
-                  ],
+      child: Obx(
+        () => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                AvatarWidget(
+                  type: AvatarType.TYPE3,
+                  thumbPath: controller.targetUser.value.thumbnail!,
+                  size: 80,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            '안녕하세요 탱구입니다. 반갑습니다',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.black,
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(child: _statisticsOne('Post', 15)),
+                      Expanded(child: _statisticsOne('Followers', 11)),
+                      Expanded(child: _statisticsOne('Following', 3)),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          )
-        ],
+            const SizedBox(height: 10),
+            Text(
+              controller.targetUser.value.description!,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -166,7 +158,7 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
 
   Widget _tapMenu() {
     return TabBar(
-      controller: tabController,
+      controller: controller.tabController,
       indicatorColor: Colors.black,
       indicatorWeight: 1,
       indicatorSize: TabBarIndicatorSize.tab,
@@ -208,12 +200,14 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        title: const Text(
-          '탱구',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.black,
+        title: Obx(
+          () => Text(
+            controller.targetUser.value.nickname!,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.black,
+            ),
           ),
         ),
         actions: [

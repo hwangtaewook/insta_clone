@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,6 @@ class Root extends GetView<AuthController> {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext _, AsyncSnapshot<User?> user) {
         if (user.hasData) {
-          //TODO 내부 파이어베이스 유저 정보를 조회 with user.data.uid
           controller.loginUser(user.data!.uid);
           return FutureBuilder<IUser?>(
             future: controller.loginUser(user.data!.uid),

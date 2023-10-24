@@ -3,73 +3,30 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instagram_clone/src/components/image_data.dart';
+import 'package:instagram_clone/src/controller/upload_controller.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class Upload extends StatefulWidget {
+class Upload extends GetView<UploadController> {
   const Upload({super.key});
 
-  @override
-  State<Upload> createState() => _UploadState();
-}
-
-class _UploadState extends State<Upload> {
-  var albums = <AssetPathEntity>[];
-  var imageList = <AssetEntity>[];
-  var headerTitle = '';
-  AssetEntity? selectiedImage;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPhotos();
-  }
-
-  void _loadPhotos() async {
-    var result = await PhotoManager.requestPermissionExtend();
-    if (result.isAuth) {
-      albums = await PhotoManager.getAssetPathList(
-        type: RequestType.image,
-        filterOption: FilterOptionGroup(
-          imageOption: const FilterOption(
-            sizeConstraint: SizeConstraint(minHeight: 100, minWidth: 100),
-          ),
-          orders: [
-            const OrderOption(type: OrderOptionType.createDate, asc: false),
-          ],
-        ),
-      );
-      _loadData();
-    } else {}
-  }
-
-  void _loadData() async {
-    headerTitle = albums.first.name;
-    await _pagePhotos();
-    update();
-  }
-
-  Future<void> _pagePhotos() async {
-    var photos = await albums.first.getAssetListPaged(page: 0, size: 30);
-    imageList.addAll(photos);
-    selectiedImage = imageList.first;
-  }
-
-  void update() => setState(() {});
-
   Widget _imagePreview() {
-    var width = MediaQuery.of(context).size.width;
-    return Container(
-      width: width,
-      height: width,
-      color: Colors.grey,
-      child: selectiedImage == null
-          ? Container()
-          : _photoWidget(selectiedImage!, width.toInt(), builder: (data) {
-              return Image.memory(
-                data,
-                fit: BoxFit.cover,
-              );
-            }),
+    var width = Get.width;
+    return Obx(
+      () => Container(
+        width: width,
+        height: width,
+        color: Colors.grey,
+        child: _photoWidget(
+          controller.selectedImage.value,
+          width.toInt(),
+          builder: (data) {
+            return Image.memory(
+              data,
+              fit: BoxFit.cover,
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -82,54 +39,59 @@ class _UploadState extends State<Upload> {
           GestureDetector(
             onTap: () {
               showModalBottomSheet(
-                context: context,
+                context: Get.context!,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
                 ),
-                isScrollControlled: albums.length > 10 ? true : false,
+                isScrollControlled:
+                    controller.albums.length > 10 ? true : false,
                 constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).padding.top,
-                    minHeight: 200),
+                  maxHeight: MediaQuery.of(Get.context!).size.height -
+                      MediaQuery.of(Get.context!).padding.top,
+                ),
                 builder: (_) => SizedBox(
-                  height: albums.length > 10
+                  height: controller.albums.length > 10
                       ? Size.infinite.height
-                      : albums.length * 60,
-                  width: MediaQuery.of(context).size.width,
+                      : controller.albums.length * 60,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Center(
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 7),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.black54,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Center(
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.black54,
+                            ),
+                            width: 40,
+                            height: 4,
                           ),
-                          width: 40,
-                          height: 4,
                         ),
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: List.generate(
-                              albums.length,
-                              (index) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 20),
-                                child: Text(albums[index].name),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: List.generate(
+                                controller.albums.length,
+                                (index) => GestureDetector(
+                                  onTap: () {
+                                    controller
+                                        .changeAlbum(controller.albums[index]);
+                                    Get.back();
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 20),
+                                    child: Text(controller.albums[index].name),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
+                        )
+                      ]),
                 ),
               );
             },
@@ -137,11 +99,13 @@ class _UploadState extends State<Upload> {
               padding: const EdgeInsets.all(5.0),
               child: Row(
                 children: [
-                  Text(
-                    headerTitle,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
+                  Obx(
+                    () => Text(
+                      controller.headerTitle.value,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                   const Icon(Icons.arrow_drop_down),
@@ -155,19 +119,15 @@ class _UploadState extends State<Upload> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 decoration: BoxDecoration(
-                  color: const Color(0xff808080),
-                  borderRadius: BorderRadius.circular(30),
-                ),
+                    color: const Color(0xff808080),
+                    borderRadius: BorderRadius.circular(30)),
                 child: Row(
                   children: [
                     ImageData(IconsPath.imageSelectIcon),
                     const SizedBox(width: 7),
                     const Text(
                       '여러 항목 선택',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ],
                 ),
@@ -182,7 +142,7 @@ class _UploadState extends State<Upload> {
                 child: ImageData(IconsPath.cameraIcon),
               )
             ],
-          )
+          ),
         ],
       ),
     );
@@ -198,23 +158,31 @@ class _UploadState extends State<Upload> {
         mainAxisSpacing: 1,
         childAspectRatio: 1,
       ),
-      itemCount: imageList.length,
+      itemCount: controller.imageList.length,
       itemBuilder: (BuildContext context, int index) {
-        return _photoWidget(imageList[index], 200, builder: (data) {
-          return GestureDetector(
-            onTap: () {
-              selectiedImage = imageList[index];
-              update();
-            },
-            child: Opacity(
-              opacity: imageList[index] == selectiedImage ? 0.3 : 1,
-              child: Image.memory(
-                data,
-                fit: BoxFit.cover,
+        return _photoWidget(
+          controller.imageList[index],
+          200,
+          builder: (data) {
+            return GestureDetector(
+              onTap: () {
+                controller.changeSelectedImage(controller.imageList[index]);
+              },
+              child: Obx(
+                () => Opacity(
+                  opacity: controller.imageList[index] ==
+                          controller.selectedImage.value
+                      ? 0.3
+                      : 1,
+                  child: Image.memory(
+                    data,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-          );
-        });
+            );
+          },
+        );
       },
     );
   }

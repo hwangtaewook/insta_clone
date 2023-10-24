@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/src/controller/auth_controller.dart';
 import 'package:instagram_clone/src/models/instagram_user.dart';
 
@@ -13,6 +16,10 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   TextEditingController nicknameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  XFile? thumnailXFile;
+
+  void update() => setState(() {});
 
   Widget _avatar() {
     return Column(
@@ -22,15 +29,24 @@ class _SignupPageState extends State<SignupPage> {
           child: SizedBox(
             width: 100,
             height: 100,
-            child: Image.asset(
-              'assets/images/default_image.png',
-              fit: BoxFit.cover,
-            ),
+            child: thumnailXFile != null
+                ? Image.file(
+                    File(thumnailXFile!.path),
+                    fit: BoxFit.cover,
+                  )
+                : Image.asset(
+                    'assets/images/default_image.png',
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
         const SizedBox(height: 15),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () async {
+            thumnailXFile = await _picker.pickImage(
+                source: ImageSource.gallery, imageQuality: 10);
+            update();
+          },
           child: const Text('이미지 변경'),
         ),
       ],
@@ -100,7 +116,7 @@ class _SignupPageState extends State<SignupPage> {
               nickname: nicknameController.text,
               description: descriptionController.text,
             );
-            AuthController.to.signup(signupUser);
+            AuthController.to.signup(signupUser, thumnailXFile);
           },
           child: const Text('회원가입'),
         ),

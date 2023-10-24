@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instagram_clone/firebase_options.dart';
-import 'package:instagram_clone/src/app.dart';
 import 'package:instagram_clone/src/binding/init_binding.dart';
 import 'package:instagram_clone/src/root.dart';
 
