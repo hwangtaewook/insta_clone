@@ -63,8 +63,8 @@ class _SearchState extends State<Search> {
                 borderRadius: BorderRadius.circular(6),
                 color: const Color(0xffefefef),
               ),
-              child: const Row(
-                children: [
+              child: Row(
+                children: const [
                   Icon(Icons.search),
                   Text(
                     '검색',

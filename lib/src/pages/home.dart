@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:instagram_clone/src/components/avatar_widget.dart';
 import 'package:instagram_clone/src/components/image_data.dart';
 import 'package:instagram_clone/src/components/post_widget.dart';
+import 'package:instagram_clone/src/controller/home_controller.dart';
 
-class Home extends StatelessWidget {
+class Home extends GetView<HomeController> {
   const Home({super.key});
 
   Widget _myStory() {
@@ -61,9 +63,10 @@ class Home extends StatelessWidget {
   }
 
   Widget _postList() {
-    return Column(
-      children: List.generate(50, (index) => const PostWidget()).toList(),
-    );
+    return Obx(() => Column(
+          children: List.generate(controller.postList.length,
+              (index) => PostWidget(post: controller.postList[index])).toList(),
+        ));
   }
 
   @override
@@ -71,16 +74,16 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: ImageData(
-          IconsPath.logo,
-          width: 270,
-        ),
+        title: ImageData(IconsPath.logo, width: 270),
         actions: [
           GestureDetector(
             onTap: () {},
-            child: ImageData(
-              IconsPath.directMessage,
-              width: 50,
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ImageData(
+                IconsPath.directMessage,
+                width: 50,
+              ),
             ),
           )
         ],

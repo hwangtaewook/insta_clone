@@ -13,7 +13,7 @@ class AuthController extends GetxController {
   Rx<IUser> user = IUser().obs;
 
   Future<IUser?> loginUser(String uid) async {
-    var userData = await UserRepository.loginUserByUId(uid);
+    var userData = await UserRepository.loginUserByUid(uid);
     if (userData != null) {
       user(userData);
       InitBinding.additionalBinding();
@@ -43,12 +43,9 @@ class AuthController extends GetxController {
     var f = File(file.path);
     var ref = FirebaseStorage.instance.ref().child('users').child(filename);
     final metadata = SettableMetadata(
-      contentType: 'image/jpeg',
-      customMetadata: {'picked-file-path': file.path},
-    );
+        contentType: 'image/jpeg',
+        customMetadata: {'picked-file-path': file.path});
     return ref.putFile(f, metadata);
-
-    //users/{uid}/profile.jpg or profile.png
   }
 
   void _submitSignup(IUser signupUser) async {

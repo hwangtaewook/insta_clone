@@ -116,11 +116,11 @@ class MyPage extends GetView<MypageController> {
   Widget _discoverPeople() {
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: const [
               Text(
                 'Discover People',
                 style: TextStyle(

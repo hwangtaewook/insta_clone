@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:instagram_clone/src/controller/auth_controller.dart';
 import 'package:instagram_clone/src/controller/bottom_nav_controller.dart';
+import 'package:instagram_clone/src/controller/home_controller.dart';
 import 'package:instagram_clone/src/controller/mypage_controller.dart';
 
 class InitBinding extends Bindings {
@@ -12,5 +13,6 @@ class InitBinding extends Bindings {
 
   static additionalBinding() {
     Get.put(MypageController(), permanent: true);
+    Get.put(HomeController(), permanent: true);
   }
 }

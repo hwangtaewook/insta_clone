@@ -3,9 +3,12 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/src/components/avatar_widget.dart';
 import 'package:instagram_clone/src/components/image_data.dart';
+import 'package:instagram_clone/src/models/post.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class PostWidget extends StatelessWidget {
-  const PostWidget({super.key});
+  final Post post;
+  const PostWidget({super.key, required this.post});
 
   Widget _header() {
     return Padding(
@@ -15,10 +18,9 @@ class PostWidget extends StatelessWidget {
         children: [
           AvatarWidget(
               type: AvatarType.TYPE3,
-              nickname: '탱구',
+              nickname: post.userInfo!.nickname,
               size: 40,
-              thumbPath:
-                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5uX6OFAY6yGyLf0vEbR5iRYPblHgRfUyOGw&usqp=CAU'),
+              thumbPath: post.userInfo!.thumbnail!),
           GestureDetector(
             onTap: () {},
             child: Padding(
@@ -35,9 +37,7 @@ class PostWidget extends StatelessWidget {
   }
 
   Widget _image() {
-    return CachedNetworkImage(
-        imageUrl:
-            'https://img.freepik.com/free-photo/adorable-kitty-looking-like-it-want-to-hunt_23-2149167099.jpg');
+    return CachedNetworkImage(imageUrl: post.thumbnail!);
   }
 
   Widget _infoCount() {
@@ -52,19 +52,15 @@ class PostWidget extends StatelessWidget {
                 IconsPath.likeOffIcon,
                 width: 65,
               ),
-              const SizedBox(
-                width: 15,
-              ),
+              const SizedBox(width: 15),
               ImageData(
                 IconsPath.replyIcon,
                 width: 60,
               ),
-              const SizedBox(
-                width: 15,
-              ),
+              const SizedBox(width: 15),
               ImageData(
                 IconsPath.directMessage,
-                width: 50,
+                width: 55,
               ),
             ],
           ),
@@ -83,15 +79,15 @@ class PostWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            '좋아요 150개',
-            style: TextStyle(
+          Text(
+            '좋아요 ${post.likeCount ?? 0}개',
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
           ExpandableText(
-            '콘텐츠1입니다\n콘텐츠 1입니다.\n콘텐츠 1입니다.\n콘텐츠 1입니다.',
-            prefixText: '탱구',
+            post.description ?? '',
+            prefixText: post.userInfo!.nickname,
             onPrefixTap: () {},
             prefixStyle: const TextStyle(fontWeight: FontWeight.bold),
             expandText: '더보기',
@@ -112,7 +108,7 @@ class PostWidget extends StatelessWidget {
       child: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.0),
         child: Text(
-          '댓글 100개 모두 보기',
+          '댓글 개 모두 보기',
           style: TextStyle(
             color: Colors.grey,
             fontSize: 13,
@@ -123,11 +119,11 @@ class PostWidget extends StatelessWidget {
   }
 
   Widget _dataAgo() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Text(
-        '1일전',
-        style: TextStyle(
+        timeago.format(post.createdAt!),
+        style: const TextStyle(
           color: Colors.grey,
           fontSize: 11,
         ),

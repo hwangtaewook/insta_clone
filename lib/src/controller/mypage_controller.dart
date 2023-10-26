@@ -19,13 +19,14 @@ class MypageController extends GetxController with GetTickerProviderStateMixin {
     if (uid == null) {
       targetUser(AuthController.to.user.value);
     } else {
-      //TODO 상대 uid로 users collection 조회
+      //TODO 상대 uid 로 users collection 조회
     }
   }
 
   void _loadData() {
     setTargetUser();
-    //포스트 리스트 로드
-    //사용자 정보 로드
+
+    // 포스트 리스트 로드
+    // 사용자 정보 로드
   }
 }

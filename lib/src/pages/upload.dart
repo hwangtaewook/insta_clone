@@ -149,41 +149,43 @@ class Upload extends GetView<UploadController> {
   }
 
   Widget _imageSelectList() {
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 1,
-        mainAxisSpacing: 1,
-        childAspectRatio: 1,
-      ),
-      itemCount: controller.imageList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _photoWidget(
-          controller.imageList[index],
-          200,
-          builder: (data) {
-            return GestureDetector(
-              onTap: () {
-                controller.changeSelectedImage(controller.imageList[index]);
-              },
-              child: Obx(
-                () => Opacity(
-                  opacity: controller.imageList[index] ==
-                          controller.selectedImage.value
-                      ? 0.3
-                      : 1,
-                  child: Image.memory(
-                    data,
-                    fit: BoxFit.cover,
+    return Obx(
+      () => GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          crossAxisSpacing: 1,
+          mainAxisSpacing: 1,
+          childAspectRatio: 1,
+        ),
+        itemCount: controller.imageList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _photoWidget(
+            controller.imageList[index],
+            200,
+            builder: (data) {
+              return GestureDetector(
+                onTap: () {
+                  controller.changeSelectedImage(controller.imageList[index]);
+                },
+                child: Obx(
+                  () => Opacity(
+                    opacity: controller.imageList[index] ==
+                            controller.selectedImage.value
+                        ? 0.3
+                        : 1,
+                    child: Image.memory(
+                      data,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -229,7 +231,7 @@ class Upload extends GetView<UploadController> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: controller.gotoImageFilter,
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: ImageData(
